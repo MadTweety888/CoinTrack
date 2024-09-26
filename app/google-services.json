@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "915878523080",
+    "project_id": "cointracker-60e7e",
+    "storage_bucket": "cointracker-60e7e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915878523080:android:a8f92c48d2d4617969f5fd",
+        "android_client_info": {
+          "package_name": "com.example.cointrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVgDEAaRc245KvCO83Ixiz_D4JkVxN8Uc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
