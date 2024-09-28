@@ -138,5 +138,12 @@ val Typography = Typography(
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp
+    ),
+    h6 = TextStyle(
+        fontFamily = fontInter,
+        fontWeight = Normal,
+        fontSize = 16.sp,
+        lineHeight = 18.sp.times(1.43),
+        letterSpacing = 0.sp
     )
 )

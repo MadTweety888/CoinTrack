@@ -23,4 +23,14 @@ class MainActivityViewModel @Inject constructor(): ViewModel() {
             PROFILE_SCREEN
         )
     }
+
+    fun hideBottomNavBar() {
+
+        bottomNavBarVisibilityState.value = false
+    }
+
+    fun showBottomNavBar() {
+
+        bottomNavBarVisibilityState.value = true
+    }
 }

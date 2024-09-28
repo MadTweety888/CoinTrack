@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
+import com.example.cointrack.ui.util.Constants.DEFAULT_BUTTON_HEIGHT
 
 @Composable
 fun PrimaryButton(
@@ -21,7 +22,7 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     enabled: Boolean = true,
-    height: Dp = 57.dp,
+    height: Dp = DEFAULT_BUTTON_HEIGHT.dp,
     backgroundColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.onPrimary
 ) {

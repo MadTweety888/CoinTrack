@@ -1,5 +1,7 @@
 package com.example.cointrack.repository.implementations
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.cointrack.domain.models.Transaction
 import com.example.cointrack.repository.interactors.TransactionsInteractor
 import com.example.cointrack.util.Resource
@@ -9,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class TransactionsRepository: TransactionsInteractor {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getTransactionsSimulated(isError: Boolean): Flow<Resource<List<Transaction>>> = flow {
 
         emit(Resource.Loading(true))

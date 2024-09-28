@@ -196,7 +196,7 @@ private fun EventsHandler(
 
     when (event) {
 
-        is NavigateToTransactionDetails -> {/*TODO Implement navigation */}
+        is NavigateToTransactionDetails -> {/* TODO Implement navigation */}
         else                            -> { /* NO ACTION */ }
     }
 }

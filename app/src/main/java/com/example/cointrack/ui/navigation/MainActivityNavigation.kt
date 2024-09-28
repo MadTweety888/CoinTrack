@@ -131,7 +131,7 @@ private fun AnimatedNavigation(
         composable(
             route = PROFILE_SCREEN
         ) {
-            ProfileScreen(navController)
+            ProfileScreen(navController, mainViewModel)
         }
     }
 }

@@ -2,8 +2,10 @@ package com.example.cointrack.repository.di
 
 import com.example.cointrack.repository.implementations.AuthRepository
 import com.example.cointrack.repository.implementations.TransactionsRepository
+import com.example.cointrack.repository.implementations.UserDataRepository
 import com.example.cointrack.repository.interactors.AuthInteractor
 import com.example.cointrack.repository.interactors.TransactionsInteractor
+import com.example.cointrack.repository.interactors.UserDataInteractor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +23,8 @@ open class RepoModule {
     @Provides
     @Singleton
     fun provideTransactionsRepository(): TransactionsInteractor { return TransactionsRepository() }
+
+    @Provides
+    @Singleton
+    fun provideUserDataRepository(): UserDataInteractor { return UserDataRepository() }
 }

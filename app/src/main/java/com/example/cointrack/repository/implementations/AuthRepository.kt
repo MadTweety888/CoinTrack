@@ -1,10 +1,14 @@
 package com.example.cointrack.repository.implementations
 
 import com.example.cointrack.repository.interactors.AuthInteractor
+import com.example.cointrack.util.Resource
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -17,26 +21,31 @@ class AuthRepository: AuthInteractor {
 
     override fun getUserId(): String = Firebase.auth.currentUser?.uid.orEmpty()
 
-    override suspend fun signUpUser(
-        email: String,
-        password: String,
-        onComplete: (Boolean) -> Unit
-    ) = withContext(Dispatchers.IO) {
+    override suspend fun signUpUser(email: String, password: String): Flow<Resource<AuthResult>>  {
 
-        Firebase.auth
-            .createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
+        return flow {
 
-                if (it.isSuccessful) {
+            emit(Resource.Loading(true))
 
-                    onComplete.invoke(true)
+            try {
 
-                } else {
+                val result =  Firebase.auth
+                    .createUserWithEmailAndPassword(email, password)
+                    .await()
 
-                    onComplete.invoke(false)
-                }
+                emit(Resource.Success(result))
+
+            } catch (e: Exception) {
+
+                emit(Resource.Error("Error signing up"))
+                e.printStackTrace()
+
+            } finally {
+
+                emit(Resource.Loading(false))
             }
-            .await()
+        }
+
     }
 
     override suspend fun logInUser(
@@ -61,5 +70,42 @@ class AuthRepository: AuthInteractor {
             .await()
     }
 
-    override fun logOutUser() = Firebase.auth.signOut()
+    override fun logOutUser(): Flow<Resource<Unit>> {
+
+        return flow {
+
+            emit(Resource.Loading(true))
+
+            try {
+
+                Firebase.auth.signOut()
+
+                emit(Resource.Success(Unit))
+
+            } catch (e: Exception) {
+
+                emit(Resource.Error("Error logging out user!"))
+                e.printStackTrace()
+
+            } finally {
+
+                emit(Resource.Loading(false))
+            }
+        }
+    }
+
+    override fun deleteUserAccount(): Boolean {
+
+        try {
+
+            Firebase.auth.currentUser?.delete()
+
+            return true
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+            return false
+        }
+    }
 }

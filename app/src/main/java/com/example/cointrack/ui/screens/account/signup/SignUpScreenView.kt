@@ -310,7 +310,7 @@ private fun SignUpScreenView(
                     .width(150.dp),
                 enabled = signUpButtonEnabled,
                 text = stringResource(id = R.string.sign_up_screen_sign_up_button),
-                onClick = viewModel::onSignUpClick
+                onClick = viewModel::onSignUpClicked
             )
 
             //endregion

@@ -20,7 +20,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.RedError
 import com.example.cointrack.ui.theme.spacing
-import com.example.cointrack.ui.util.components.BoxWithBackgroundPattern
+import com.example.cointrack.ui.util.components.BoxWithDiagonalBackgroundPattern
+import com.example.cointrack.ui.util.components.buttons.DestroyingActionButton
 
 @Composable
 fun PrimaryErrorScreen(
@@ -36,7 +37,7 @@ fun PrimaryErrorScreen(
             .pointerInput(Unit) { detectTapGestures(onTap = { /* NO ACTION */ }) }
     ) {
 
-        BoxWithBackgroundPattern {
+        BoxWithDiagonalBackgroundPattern {
 
             Column(
                 modifier = Modifier.align(Alignment.Center),
@@ -53,7 +54,7 @@ fun PrimaryErrorScreen(
 
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
-                    PrimaryButton(
+                    DestroyingActionButton(
                         modifier = Modifier.fillMaxWidth(0.6f),
                         text = "Retry",
                         onClick = onRetryClicked

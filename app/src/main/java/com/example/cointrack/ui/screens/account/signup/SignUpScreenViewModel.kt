@@ -4,7 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cointrack.repository.interactors.AuthInteractor
+import com.example.cointrack.repository.interactors.UserDataInteractor
+import com.example.cointrack.util.Resource
+import com.google.firebase.auth.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -12,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpScreenViewModel @Inject constructor(
     private val authRepository: AuthInteractor,
-    //private val usersDataRepository: UsersDataInteractor
+    private val userDataRepository: UserDataInteractor
 ): ViewModel() {
 
     val events = MutableSharedFlow<Events?>(replay = 0)
@@ -53,54 +57,90 @@ class SignUpScreenViewModel @Inject constructor(
 
     //endregion
 
-    fun onSignUpClick() = viewModelScope.launch {
+    fun onSignUpClicked() {
 
-        isLoading.value = true
+        signUpUser()
+    }
 
-        try {
+    private fun signUpUser() = viewModelScope.launch(Dispatchers.IO) {
 
-            authRepository.signUpUser(
-                email = emailTextState.value.trim(),
-                password = passwordTextState.value.trim()
-            ) { isSuccessful ->
+        authRepository.signUpUser(
+            email = emailTextState.value.trim(),
+            password = passwordTextState.value.trim()
+        ).collect { result ->
 
-                if (isSuccessful) {
+            when (result) {
 
-                    navigateToTransactionsScreen()
-
-                    /*usersDataRepository.addUserData(
-                        userId = authRepository.getUserId(),
-                        name = nameTextState.value.trim(),
-                        surname = surnameTextState.value.trim(),
-                        email = emailTextState.value.trim(),
-                        userType = selectedUserType.value ?: return@signUpUser
-                    ) { isSuccessfulUserData ->
-
-                        if (isSuccessfulUserData) {
-
-                            navigateToHomeScreen()
-
-                        } else {
-
-                            makeSignUpErrorToast()
-                        }
-                    }*/
-
-                } else {
-
-                    makeSignUpErrorToast()
-                }
+                is Resource.Success -> handleSignUpUserSuccess(result.data)
+                is Resource.Error   -> handleSignUpUserError()
+                is Resource.Loading -> handleSignUpUserLoading(result.isLoading)
             }
-        } catch (e:Exception) {
-
-            makeSignUpErrorToast()
-            e.printStackTrace()
-
-        } finally {
-
-            isLoading.value = false
         }
     }
+
+    //region SignUp Helpers
+
+    private fun handleSignUpUserSuccess(authResult: AuthResult?) {
+
+        authResult?.user?.uid?.let {
+
+            createUserData(it)
+
+        } ?: run {
+
+            makeSignUpErrorToast()
+        }
+    }
+
+    private fun handleSignUpUserError() {
+
+        makeSignUpErrorToast()
+    }
+
+    private fun handleSignUpUserLoading(isLoading: Boolean) {
+
+        //SINCE THE CALL IS CHANGED WE DON'T WANT TO TURN OFF LOADING UNTIL THE SECOND CALL IS DONE
+        if (isLoading) this.isLoading.value = true
+    }
+
+    //endregion
+
+    private fun createUserData(id: String) = viewModelScope.launch {
+
+        userDataRepository.addUserData(
+            userId = id,
+            name = nameTextState.value,
+            surname = surnameTextState.value,
+            email = emailTextState.value
+        ).collect { result ->
+
+            when (result) {
+
+                is Resource.Success -> handleCreateUserDataSuccess()
+                is Resource.Error   -> handleCreateUserDataError()
+                is Resource.Loading -> handleCreateUserDataLoading(result.isLoading)
+            }
+        }
+    }
+
+    //region Create UserData Helpers
+
+    private fun handleCreateUserDataSuccess() {
+
+        navigateToTransactionsScreen()
+    }
+
+    private fun handleCreateUserDataError() {
+
+        makeSignUpErrorToast()
+    }
+
+    private fun handleCreateUserDataLoading(isLoading: Boolean) {
+
+        this.isLoading.value = isLoading
+    }
+
+    //endregion
 
     //region Event Helpers
 

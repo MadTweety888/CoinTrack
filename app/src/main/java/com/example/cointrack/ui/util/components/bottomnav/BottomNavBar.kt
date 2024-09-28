@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
@@ -66,7 +67,8 @@ fun BottomNavBar(
 
                             Icon(
                                 modifier = Modifier
-                                    .padding(vertical = MaterialTheme.spacing.extraSmall),
+                                    .padding(vertical = MaterialTheme.spacing.extraSmall)
+                                    .scale(1.3f),
                                 imageVector = item.icon,
                                 contentDescription = "BottomBar item icon"
                             )
