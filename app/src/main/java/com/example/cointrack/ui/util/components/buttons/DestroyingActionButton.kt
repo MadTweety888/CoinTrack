@@ -24,7 +24,7 @@ import com.example.cointrack.ui.theme.Dark
 import com.example.cointrack.ui.theme.RedError
 import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
-import com.example.cointrack.ui.util.Constants.DEFAULT_BUTTON_HEIGHT
+import com.example.cointrack.ui.util.ComponentSizes.DEFAULT_BUTTON_HEIGHT
 
 @Composable
 fun DestroyingActionButton(

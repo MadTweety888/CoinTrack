@@ -3,10 +3,12 @@ package com.example.cointrack.ui.screens.main.transactions
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cointrack.domain.enums.SortOrder
+import com.example.cointrack.domain.enums.SortOrder.DATE_DESCENDING
+import com.example.cointrack.domain.enums.TransactionType
 import com.example.cointrack.domain.models.Transaction
 import com.example.cointrack.repository.interactors.AuthInteractor
 import com.example.cointrack.repository.interactors.TransactionsInteractor
-import com.example.cointrack.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -23,6 +25,10 @@ class TransactionsScreenViewModel @Inject constructor(
     var userId: String? = null
 
     val transactions = mutableStateOf<List<Transaction>>(emptyList())
+
+    val selectedSort = mutableStateOf(DATE_DESCENDING)
+    val selectedFilter = mutableStateOf<TransactionType?>(null)
+    val isSortAndFilterDialogVisible = mutableStateOf(false)
 
     val isLoading = mutableStateOf(false)
     val isError = mutableStateOf<String?>(null)
@@ -41,7 +47,7 @@ class TransactionsScreenViewModel @Inject constructor(
 
     private fun fetchTransactions() = viewModelScope.launch {
 
-        transactionsRepository.getTransactionsSimulated(false).collect { result ->
+        /*transactionsRepository.getTransactionsSimulated(false).collect { result ->
 
             when (result) {
 
@@ -49,7 +55,7 @@ class TransactionsScreenViewModel @Inject constructor(
                 is Resource.Error   -> handleFetchTransactionsError(result.message)
                 is Resource.Loading -> handleFetchTransactionsLoading(result.isLoading)
             }
-        }
+        }*/
     }
 
     //region Fetch Transactions Helpers
@@ -71,6 +77,28 @@ class TransactionsScreenViewModel @Inject constructor(
 
     //endregion
 
+    fun onAddTransactionButtonClicked() {
+
+        navigateToAddTransaction()
+    }
+
+    fun onSortAndFilterButtonClicked() {
+
+        isSortAndFilterDialogVisible.value = true
+    }
+
+    fun onSortAndFilterDialogDismissed() {
+
+        isSortAndFilterDialogVisible.value = false
+    }
+
+    fun onSortAndFilterDialogConfirmed(selectedSort: SortOrder, selectedFilter: TransactionType) {
+
+        this.selectedSort.value = selectedSort
+        this.selectedFilter.value = selectedFilter
+        isSortAndFilterDialogVisible.value = false
+    }
+
     fun onRetryClicked() {
 
         isError.value = null
@@ -78,13 +106,23 @@ class TransactionsScreenViewModel @Inject constructor(
         fetchTransactions()
     }
 
+    //region Events Helpers
+
+    private fun navigateToAddTransaction() = viewModelScope.launch {
+
+        events.emit(Events.NavigateToAddTransaction)
+    }
+
     private fun navigateToTransactionDetails() = viewModelScope.launch {
 
         events.emit(Events.NavigateToTransactionDetails)
     }
 
+    //endregion
+
     sealed class Events {
 
+        object NavigateToAddTransaction: Events()
         object NavigateToTransactionDetails: Events()
     }
 }

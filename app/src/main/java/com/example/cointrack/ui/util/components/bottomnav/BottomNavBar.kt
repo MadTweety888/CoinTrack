@@ -46,7 +46,7 @@ fun BottomNavBar(
 
         BottomNavigation(
             modifier = modifier
-                .height(ComponentSizes.bottomNavBarHeight.dp)
+                .height(ComponentSizes.BOTTOM_NAV_BAR_HEIGHT.dp)
                 .clip(MaterialTheme.shapes.large),
             backgroundColor = MaterialTheme.colors.background,
             elevation = 5.dp

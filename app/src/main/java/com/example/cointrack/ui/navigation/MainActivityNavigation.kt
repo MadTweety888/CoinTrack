@@ -22,9 +22,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.cointrack.ui.activities.MainActivityViewModel
+import com.example.cointrack.ui.navigation.Routes.ADD_TRANSACTION_SCREEN
 import com.example.cointrack.ui.navigation.Routes.PROFILE_SCREEN
 import com.example.cointrack.ui.navigation.Routes.STATISTICS_SCREEN
 import com.example.cointrack.ui.navigation.Routes.TRANSACTIONS_SCREEN
+import com.example.cointrack.ui.screens.main.addtransaction.AddTransactionScreen
 import com.example.cointrack.ui.screens.main.profile.ProfileScreen
 import com.example.cointrack.ui.screens.main.statistics.StatisticsScreen
 import com.example.cointrack.ui.screens.main.transactions.TransactionsScreen
@@ -131,7 +133,13 @@ private fun AnimatedNavigation(
         composable(
             route = PROFILE_SCREEN
         ) {
-            ProfileScreen(navController, mainViewModel)
+            ProfileScreen(mainViewModel)
+        }
+
+        composable(
+            route = ADD_TRANSACTION_SCREEN
+        ) {
+            AddTransactionScreen(navController)
         }
     }
 }

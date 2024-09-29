@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,14 +23,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.cointrack.R
 import com.example.cointrack.domain.enums.TransactionType.EXPENSE
 import com.example.cointrack.domain.enums.toDisplayString
 import com.example.cointrack.domain.models.Transaction
 import com.example.cointrack.ui.activities.MainActivityViewModel
+import com.example.cointrack.ui.navigation.Routes.ADD_TRANSACTION_SCREEN
+import com.example.cointrack.ui.screens.main.transactions.TransactionsScreenViewModel.Events.NavigateToAddTransaction
 import com.example.cointrack.ui.screens.main.transactions.TransactionsScreenViewModel.Events.NavigateToTransactionDetails
 import com.example.cointrack.ui.theme.GreenValid
 import com.example.cointrack.ui.theme.GreyLight
@@ -37,6 +43,7 @@ import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
 import com.example.cointrack.ui.util.components.BoxWithBackgroundPattern
 import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
+import com.example.cointrack.ui.util.primary.PrimaryHeader
 import com.example.cointrack.ui.util.primary.PrimaryLoadingScreen
 
 @Composable
@@ -67,15 +74,38 @@ private fun TransactionsScreenView(
             modifier = Modifier.padding(
                 start = MaterialTheme.spacing.medium,
                 end = MaterialTheme.spacing.medium,
-                bottom = ComponentSizes.bottomNavBarHeight.dp
+                bottom = ComponentSizes.BOTTOM_NAV_BAR_HEIGHT.dp
             )
         ) {
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+            TransactionsHeader(
+                onAddTransactionClick = viewModel::onAddTransactionButtonClicked,
+                onSortAndFilterClick = viewModel::onSortAndFilterButtonClicked
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
             TransactionsList(viewModel)
         }
     }
+}
+
+@Composable
+private fun TransactionsHeader(
+    onAddTransactionClick: () -> Unit,
+    onSortAndFilterClick: () -> Unit
+) {
+
+    PrimaryHeader(
+        headerLeadingIcon = Icons.Default.ReceiptLong,
+        headerTitle = "Transactions",
+        additionalActionIcons = listOf(
+            Pair(painterResource(id = R.drawable.add_item_icon)) { onAddTransactionClick() },
+            Pair(painterResource(id = R.drawable.sort_filter_icon)) { onSortAndFilterClick() },
+        )
+    )
 }
 
 @Composable
@@ -196,6 +226,7 @@ private fun EventsHandler(
 
     when (event) {
 
+        is NavigateToAddTransaction     -> { navController.navigate(ADD_TRANSACTION_SCREEN) }
         is NavigateToTransactionDetails -> {/* TODO Implement navigation */}
         else                            -> { /* NO ACTION */ }
     }

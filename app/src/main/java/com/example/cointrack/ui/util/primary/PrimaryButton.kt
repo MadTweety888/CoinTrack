@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
-import com.example.cointrack.ui.util.Constants.DEFAULT_BUTTON_HEIGHT
+import com.example.cointrack.ui.util.ComponentSizes.DEFAULT_BUTTON_HEIGHT
 
 @Composable
 fun PrimaryButton(

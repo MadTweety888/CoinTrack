@@ -3,9 +3,13 @@ package com.example.cointrack.ui.util.primary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +35,7 @@ import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.Grey30
 import com.example.cointrack.ui.theme.Grey70
 import com.example.cointrack.ui.theme.Grey85
+import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
 
 private const val DEFAULT_TRAILING_ICON_SIZE = 16
@@ -49,6 +54,8 @@ fun PrimaryTextField(
     trailingIcon: ImageVector? = null,
     trailingIconTint: Color = Grey30,
     onTrailingIconClick: () -> Unit = {},
+    trailingText: String = "",
+    trailingTextColor: Color = White,
     trailingIconSize: Dp = DEFAULT_TRAILING_ICON_SIZE.dp,
     cursorColor: Color = Grey70,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = Done),
@@ -96,7 +103,12 @@ fun PrimaryTextField(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    innerTextField()
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+
+                        innerTextField()
+                    }
 
                     trailingIcon?.let {
 
@@ -106,6 +118,25 @@ fun PrimaryTextField(
                             trailingIconSize = trailingIconSize,
                             onTrailingIconClick = onTrailingIconClick
                         )
+
+                    } ?: run {
+
+                        if (trailingText.isNotBlank()) {
+
+                            Spacer(modifier = Modifier.width(MaterialTheme.spacing.extraSmall))
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(vertical = 6.dp)
+                            ) {
+
+                                Text(
+                                    text = trailingText,
+                                    style = textStyle,
+                                    color = trailingTextColor
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -119,11 +150,23 @@ private fun PrimaryTextFieldPreview() = CoinTrackTheme {
 
     val text = remember { mutableStateOf("") }
 
-    PrimaryTextField(
-        text = text.value,
-        onTextChanged = { text.value = it },
-        placeholder = "Placeholder",
-        trailingIcon = Icons.Default.Close,
-        onTrailingIconClick = { text.value = "" }
-    )
+    Column {
+
+        PrimaryTextField(
+            text = text.value,
+            onTextChanged = { text.value = it },
+            placeholder = "Placeholder",
+            trailingIcon = Icons.Default.Close,
+            onTrailingIconClick = { text.value = "" }
+        )
+
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+        PrimaryTextField(
+            text = text.value,
+            onTextChanged = { text.value = it },
+            placeholder = "Placeholder",
+            trailingText = "RSD"
+        )
+    }
 }

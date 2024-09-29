@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -48,6 +49,36 @@ fun PrimaryInputFormTrailingIcon(
         Icon(
             modifier = Modifier.size(trailingIconSize),
             imageVector = trailingIcon,
+            tint = trailingIconTint,
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+fun PrimaryInputFormTrailingIcon(
+    modifier: Modifier = Modifier,
+    trailingIcon: Painter,
+    trailingIconTint: Color = Grey30,
+    onTrailingIconClick: () -> Unit = {},
+    trailingIconSize: Dp = DEFAULT_TRAILING_ICON_SIZE.dp,
+    isEnabled: Boolean = true
+) {
+
+    Box(
+        modifier = modifier
+            .size(trailingIconSize + MaterialTheme.spacing.medium)
+            .clip(CircleShape)
+            .conditional(isEnabled) {
+
+                clickable { onTrailingIconClick() }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+
+        Icon(
+            modifier = Modifier.size(trailingIconSize),
+            painter = trailingIcon,
             tint = trailingIconTint,
             contentDescription = null
         )

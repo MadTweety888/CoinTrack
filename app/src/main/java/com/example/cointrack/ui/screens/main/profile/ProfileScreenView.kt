@@ -19,13 +19,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -43,7 +41,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.cointrack.R
 import com.example.cointrack.domain.models.UserData
 import com.example.cointrack.ui.activities.AccountActivity
@@ -56,18 +53,17 @@ import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
 import com.example.cointrack.ui.util.components.BoxWithDiagonalBackgroundPattern
 import com.example.cointrack.ui.util.components.dialogs.DestroyingActionDialog
+import com.example.cointrack.ui.util.components.loadings.ProfileLoadingScreen
 import com.example.cointrack.ui.util.primary.PrimaryButton
 import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
 import com.example.cointrack.ui.util.primary.PrimaryTextField
 import com.example.cointrack.util.extentions.findActivity
-import com.example.cointrack.util.extentions.shimmerLoadingAnimation
 import com.skydoves.landscapist.glide.GlideImage
 
 private const val PHOTO_SIZE = 120
 
 @Composable
 fun ProfileScreen(
-    navController: NavHostController,
     mainViewModel: MainActivityViewModel
 ) {
 
@@ -128,7 +124,7 @@ private fun ProfileScreenView(
 
             Spacer(
                 modifier = Modifier
-                    .height(ComponentSizes.bottomNavBarHeight.dp + MaterialTheme.spacing.large)
+                    .height(ComponentSizes.BOTTOM_NAV_BAR_HEIGHT.dp + MaterialTheme.spacing.large)
             )
         }
     }
@@ -324,111 +320,7 @@ private fun IsLoadingState(
 
     if (isLoading) {
 
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.background)
-                .pointerInput(Unit) { detectTapGestures(onTap = { /* NO ACTION */ }) }
-        ) {
-
-            BoxWithDiagonalBackgroundPattern {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                ) {
-
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-
-                        Box(
-                            modifier = Modifier
-                                .size(PHOTO_SIZE.dp)
-                                .clip(CircleShape)
-                                .shimmerLoadingAnimation()
-                        )
-
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-
-                        Box(
-                            modifier = Modifier
-                                .height(32.dp)
-                                .width(128.dp)
-                                .clip(CircleShape)
-                                .shimmerLoadingAnimation()
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-
-                    Column {
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerLoadingAnimation()
-                        )
-
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerLoadingAnimation()
-                        )
-
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerLoadingAnimation()
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Column {
-
-                        Box(
-                            modifier = Modifier
-                                .height(32.dp)
-                                .width(72.dp)
-                                .clip(CircleShape)
-                                .shimmerLoadingAnimation()
-                        )
-
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-
-                        Box(
-                            modifier = Modifier
-                                .height(32.dp)
-                                .width(138.dp)
-                                .clip(CircleShape)
-                                .shimmerLoadingAnimation()
-                        )
-                    }
-
-                    Spacer(
-                        modifier = Modifier
-                            .height(ComponentSizes.bottomNavBarHeight.dp + MaterialTheme.spacing.large)
-                    )
-                }
-            }
-        }
+        ProfileLoadingScreen(photoSize = PHOTO_SIZE.dp)
     }
 }
 
