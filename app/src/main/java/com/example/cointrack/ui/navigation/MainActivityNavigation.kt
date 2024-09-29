@@ -20,15 +20,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.example.cointrack.ui.activities.MainActivityViewModel
+import com.example.cointrack.ui.navigation.NavigationArguments.SELECTED_TRANSACTION_ID_NAV_ARGUMENT
 import com.example.cointrack.ui.navigation.Routes.ADD_TRANSACTION_SCREEN
 import com.example.cointrack.ui.navigation.Routes.PROFILE_SCREEN
 import com.example.cointrack.ui.navigation.Routes.STATISTICS_SCREEN
 import com.example.cointrack.ui.navigation.Routes.TRANSACTIONS_SCREEN
+import com.example.cointrack.ui.navigation.Routes.TRANSACTION_DETAILS_SCREEN
 import com.example.cointrack.ui.screens.main.addtransaction.AddTransactionScreen
 import com.example.cointrack.ui.screens.main.profile.ProfileScreen
 import com.example.cointrack.ui.screens.main.statistics.StatisticsScreen
+import com.example.cointrack.ui.screens.main.transactiondetails.TransactionDetailsScreen
 import com.example.cointrack.ui.screens.main.transactions.TransactionsScreen
 import com.example.cointrack.ui.util.components.bottomnav.BottomNavBar
 import com.example.cointrack.ui.util.components.bottomnav.BottomNavItem
@@ -121,7 +126,7 @@ private fun AnimatedNavigation(
         composable(
             route = TRANSACTIONS_SCREEN
         ) {
-            TransactionsScreen(navController, mainViewModel)
+            TransactionsScreen(navController)
         }
 
         composable(
@@ -141,6 +146,17 @@ private fun AnimatedNavigation(
         ) {
             AddTransactionScreen(navController)
         }
+        composable(
+            route = TRANSACTION_DETAILS_SCREEN + "/{${SELECTED_TRANSACTION_ID_NAV_ARGUMENT}}",
+            arguments = listOf(
+                navArgument(SELECTED_TRANSACTION_ID_NAV_ARGUMENT) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            TransactionDetailsScreen(navController)
+        }
+
     }
 }
 

@@ -26,12 +26,14 @@ import com.example.cointrack.ui.theme.Dark
 import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
+import com.example.cointrack.util.extentions.conditional
 
 @Composable
 fun PrimaryRadioButton(
     modifier: Modifier = Modifier,
     size: Dp = ComponentSizes.DEFAULT_RADIO_BUTTON_SIZE.dp,
     isSelected: Boolean,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
 
@@ -53,7 +55,9 @@ fun PrimaryRadioButton(
             .background(backgroundColor, CircleShape)
             .border(borderWidth, MaterialTheme.colors.primary, CircleShape)
             .clip(CircleShape)
-            .clickable { onClick() }
+            .conditional(enabled) {
+                clickable { onClick() }
+            }
     )
 }
 

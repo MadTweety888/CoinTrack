@@ -27,6 +27,7 @@ import com.example.cointrack.ui.theme.Grey85
 import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.primary.PrimaryInputFormTrailingIcon
+import com.example.cointrack.util.extentions.conditional
 
 private const val DEFAULT_TRAILING_ICON_SIZE = 16
 
@@ -35,6 +36,7 @@ fun RowInputField(
     modifier: Modifier = Modifier,
     item: String,
     placeholder: String = "",
+    enabled: Boolean = true,
     trailingIconSize: Dp = DEFAULT_TRAILING_ICON_SIZE.dp,
     onRowClicked: () -> Unit
 ) {
@@ -44,7 +46,9 @@ fun RowInputField(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .background(Grey85)
-            .clickable { onRowClicked() }
+            .conditional(enabled) {
+                clickable { onRowClicked() }
+            }
             .padding(
                 bottom = MaterialTheme.spacing.small,
                 start = MaterialTheme.spacing.medium,
@@ -78,6 +82,7 @@ fun RowInputField(
             trailingIcon = painterResource(id = R.drawable.arrow_down_icon),
             trailingIconTint = Grey30,
             trailingIconSize = trailingIconSize,
+            isEnabled = enabled,
             onTrailingIconClick = onRowClicked
         )
     }

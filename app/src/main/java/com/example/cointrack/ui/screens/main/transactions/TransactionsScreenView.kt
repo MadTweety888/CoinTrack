@@ -1,6 +1,7 @@
 package com.example.cointrack.ui.screens.main.transactions
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,8 +34,8 @@ import com.example.cointrack.R
 import com.example.cointrack.domain.enums.TransactionType.EXPENSE
 import com.example.cointrack.domain.enums.toDisplayString
 import com.example.cointrack.domain.models.Transaction
-import com.example.cointrack.ui.activities.MainActivityViewModel
 import com.example.cointrack.ui.navigation.Routes.ADD_TRANSACTION_SCREEN
+import com.example.cointrack.ui.navigation.Routes.TRANSACTION_DETAILS_SCREEN
 import com.example.cointrack.ui.screens.main.transactions.TransactionsScreenViewModel.Events.NavigateToAddTransaction
 import com.example.cointrack.ui.screens.main.transactions.TransactionsScreenViewModel.Events.NavigateToTransactionDetails
 import com.example.cointrack.ui.theme.GreenValid
@@ -45,11 +47,11 @@ import com.example.cointrack.ui.util.components.BoxWithBackgroundPattern
 import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
 import com.example.cointrack.ui.util.primary.PrimaryHeader
 import com.example.cointrack.ui.util.primary.PrimaryLoadingScreen
+import com.example.cointrack.util.extentions.addArgs
 
 @Composable
 fun TransactionsScreen(
-    navController: NavHostController,
-    mainActivityViewModel: MainActivityViewModel
+    navController: NavHostController
 ) {
 
     val viewModel = hiltViewModel<TransactionsScreenViewModel>()
@@ -121,7 +123,7 @@ private fun TransactionsList(
 
         items(transactions) { transaction ->
 
-            TransactionListItem(transaction)
+            TransactionListItem(transaction) { viewModel.onTransactionClicked(transaction.id) }
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
@@ -130,7 +132,8 @@ private fun TransactionsList(
 
 @Composable
 private fun TransactionListItem(
-    transaction: Transaction
+    transaction: Transaction,
+    onClick: () -> Unit
 ) {
 
     Row(
@@ -138,6 +141,7 @@ private fun TransactionListItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colors.surface)
+            .clickable { onClick() }
             .padding(
                 horizontal = MaterialTheme.spacing.small,
                 vertical = MaterialTheme.spacing.extraSmall
@@ -224,10 +228,18 @@ private fun EventsHandler(
 
     val event by viewModel.events.collectAsState(initial = null)
 
-    when (event) {
+    LaunchedEffect(key1 = event) {
 
-        is NavigateToAddTransaction     -> { navController.navigate(ADD_TRANSACTION_SCREEN) }
-        is NavigateToTransactionDetails -> {/* TODO Implement navigation */}
-        else                            -> { /* NO ACTION */ }
+        when (event) {
+
+            is NavigateToAddTransaction     -> { navController.navigate(ADD_TRANSACTION_SCREEN) }
+            is NavigateToTransactionDetails -> {
+
+                val selectedTransactionId = (event as NavigateToTransactionDetails).selectedTransactionId
+
+                navController.navigate(TRANSACTION_DETAILS_SCREEN.addArgs(selectedTransactionId))
+            }
+            else                            -> { /* NO ACTION */ }
+        }
     }
 }

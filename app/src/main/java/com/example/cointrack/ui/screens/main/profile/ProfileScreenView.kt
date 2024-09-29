@@ -28,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -396,13 +397,16 @@ private fun EventsHandler(
 
     val event by viewModel.events.collectAsState(initial = null)
 
-    when (event) {
+    LaunchedEffect(key1 = event) {
 
-        is NavigateToSplashScreen -> {
-            context.startActivity(Intent(context, AccountActivity::class.java))
-            context.findActivity()?.finish()
+        when (event) {
+
+            is NavigateToSplashScreen -> {
+                context.startActivity(Intent(context, AccountActivity::class.java))
+                context.findActivity()?.finish()
+            }
+            else -> { /* NO ACTION */ }
         }
-        else -> { /* NO ACTION */ }
     }
 }
 

@@ -13,4 +13,5 @@ object Routes {
     const val STATISTICS_SCREEN = "statistics_screen"
     const val PROFILE_SCREEN = "profile_screen"
     const val ADD_TRANSACTION_SCREEN = "add_transaction_screen"
+    const val TRANSACTION_DETAILS_SCREEN = "transaction_details_screen"
 }

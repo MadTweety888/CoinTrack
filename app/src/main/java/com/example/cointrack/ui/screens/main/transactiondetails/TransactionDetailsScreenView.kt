@@ -1,4 +1,4 @@
-package com.example.cointrack.ui.screens.main.addtransaction
+package com.example.cointrack.ui.screens.main.transactiondetails
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -47,31 +48,33 @@ import com.example.cointrack.domain.enums.TransactionType.INCOME
 import com.example.cointrack.domain.enums.TransactionsSource
 import com.example.cointrack.domain.enums.TransactionsSource.UNKNOWN
 import com.example.cointrack.domain.enums.toDisplayString
-import com.example.cointrack.ui.screens.main.addtransaction.AddTransactionScreenViewModel.Events.NavigateBack
+import com.example.cointrack.ui.screens.main.transactiondetails.TransactionDetailsScreenViewModel.Events.NavigateBack
 import com.example.cointrack.ui.theme.Dark
 import com.example.cointrack.ui.theme.Grey70
+import com.example.cointrack.ui.theme.RedError
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.components.BoxWithDiagonalBackgroundPattern
 import com.example.cointrack.ui.util.components.RowInputField
 import com.example.cointrack.ui.util.components.buttons.StickyCTAButton
 import com.example.cointrack.ui.util.components.dialogs.CreateCategoryDialog
 import com.example.cointrack.ui.util.components.dialogs.SelectCategoryDialog
-import com.example.cointrack.ui.util.components.loadings.AddTransactionLoadingScreen
+import com.example.cointrack.ui.util.components.loadings.TransactionDetailsLoadingScreen
 import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
 import com.example.cointrack.ui.util.primary.PrimaryHeader
 import com.example.cointrack.ui.util.primary.PrimaryRadioButton
 import com.example.cointrack.ui.util.primary.PrimaryTextField
+import com.example.cointrack.util.extentions.conditional
 
 private const val NAV_BACK_ICON_SIZE = 18
 
 @Composable
-fun AddTransactionScreen(
+fun TransactionDetailsScreen(
     navController: NavHostController
 ) {
 
-    val viewModel = hiltViewModel<AddTransactionScreenViewModel>()
+    val viewModel = hiltViewModel<TransactionDetailsScreenViewModel>()
 
-    AddTransactionScreenView(viewModel)
+    TransactionDetailsScreenView(viewModel)
 
     IsLoadingState(viewModel)
 
@@ -83,14 +86,15 @@ fun AddTransactionScreen(
 }
 
 @Composable
-private fun AddTransactionScreenView(
-    viewModel: AddTransactionScreenViewModel
+private fun TransactionDetailsScreenView(
+    viewModel: TransactionDetailsScreenViewModel
 ) {
 
     val focusManager = LocalFocusManager.current
 
-    val transactionDraft by remember { viewModel.transactionDraft }
+    val transactionDetails by remember { viewModel.displayedTransactionDetails }
 
+    val isEditing by remember { viewModel.isEditing }
     val isSaveButtonVisible by remember { viewModel.isSaveButtonVisible }
 
     BoxWithDiagonalBackgroundPattern {
@@ -104,23 +108,30 @@ private fun AddTransactionScreenView(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-            AddTransactionHeader(viewModel::onNavigateBackIconClicked)
+            AddTransactionHeader(
+                onNavigateBackClicked = viewModel::onNavigateBackIconClicked,
+                isEditing = isEditing,
+                onEditClicked = viewModel::onEditButtonClicked,
+                onStopEditingClicked = viewModel::onStopEditingClicked
+            )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
             TransactionTypeSection(
-                type = transactionDraft.type,
+                type = transactionDetails?.type ?: EXPENSE,
+                isEditing = isEditing,
                 onTransactionTypeClicked = { viewModel.onTransactionTypeChanged(it) }
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-            AmountSection(viewModel)
+            AmountSection(viewModel, isEditing)
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
             CategorySection(
-                category = transactionDraft.category,
+                category = transactionDetails?.category ?: "",
+                isEditing = isEditing,
                 onCategorySectionClick = {
 
                     focusManager.clearFocus()
@@ -131,21 +142,24 @@ private fun AddTransactionScreenView(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
             NoteSection(
-                note = transactionDraft.note,
+                note = transactionDetails?.note ?: "",
+                isEditing = isEditing,
                 onNoteChanged = { viewModel.onTransactionNoteChanged(it) }
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
             AccountSection(
-                source = transactionDraft.source,
+                source = transactionDetails?.source ?: UNKNOWN,
+                isEditing = isEditing,
                 onSourceClick = { viewModel.onTransactionSourceChanged(it) }
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
             DescriptionSection(
-                description = transactionDraft.description,
+                description = transactionDetails?.description ?: "",
+                isEditing = isEditing,
                 onDescriptionChanged = { viewModel.onTransactionDescriptionChanged(it) }
             )
 
@@ -161,22 +175,68 @@ private fun AddTransactionScreenView(
 
 @Composable
 private fun AddTransactionHeader(
-    onNavigateBackClicked: () -> Unit
+    isEditing: Boolean,
+    onNavigateBackClicked: () -> Unit,
+    onEditClicked: () -> Unit,
+    onStopEditingClicked: () -> Unit
 ) {
 
-    PrimaryHeader(
-        headerLeadingIcon = painterResource(id = R.drawable.navigate_back_icon),
-        headerTitle = "Add Transaction",
-        headerIconsSize = NAV_BACK_ICON_SIZE.dp,
-        headerIconsTint = MaterialTheme.colors.onBackground,
-        isHeaderLeadingIconClickable = true,
-        onHeaderLeadingIconClick = onNavigateBackClicked
-    )
+    if (isEditing) {
+
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            PrimaryHeader(
+                modifier = Modifier.align(Alignment.CenterStart),
+                headerLeadingIcon = painterResource(id = R.drawable.navigate_back_icon),
+                headerTitle = "Edit Transaction",
+                headerIconsSize = NAV_BACK_ICON_SIZE.dp,
+                headerIconsTint = MaterialTheme.colors.onBackground,
+                isHeaderLeadingIconClickable = true,
+                onHeaderLeadingIconClick = onNavigateBackClicked
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clip(CircleShape)
+                    .clickable { onStopEditingClicked() }
+                    .padding(
+                        vertical = MaterialTheme.spacing.extraSmall,
+                        horizontal = MaterialTheme.spacing.small
+                    )
+            ) {
+
+                Text(
+                    text = "Stop Editing",
+                    style = MaterialTheme.typography.h5,
+                    color = RedError
+                )
+            }
+
+        }
+
+    } else {
+
+        PrimaryHeader(
+            headerLeadingIcon = painterResource(id = R.drawable.navigate_back_icon),
+            headerTitle = "Transaction Details",
+            headerIconsSize = NAV_BACK_ICON_SIZE.dp,
+            headerIconsTint = MaterialTheme.colors.onBackground,
+            isHeaderLeadingIconClickable = true,
+            onHeaderLeadingIconClick = onNavigateBackClicked,
+            additionalActionIcons = listOf(
+                Pair(painterResource(id = R.drawable.edit_icon)) { onEditClicked() }
+            )
+        )
+    }
 }
 
 @Composable
 private fun TransactionTypeSection(
     type: TransactionType,
+    isEditing: Boolean,
     onTransactionTypeClicked: (type: TransactionType) -> Unit
 ) {
 
@@ -185,6 +245,7 @@ private fun TransactionTypeSection(
         TransactionTypeBubble(
             transactionType = EXPENSE,
             isSelected = type == EXPENSE,
+            isEnabled = isEditing,
             onClick = { onTransactionTypeClicked(EXPENSE) }
         )
 
@@ -193,6 +254,7 @@ private fun TransactionTypeSection(
         TransactionTypeBubble(
             transactionType = INCOME,
             isSelected = type == INCOME,
+            isEnabled = isEditing,
             onClick = { onTransactionTypeClicked(INCOME) }
         )
     }
@@ -202,6 +264,7 @@ private fun TransactionTypeSection(
 private fun RowScope.TransactionTypeBubble(
     transactionType: TransactionType,
     isSelected: Boolean,
+    isEnabled: Boolean,
     onClick: () -> Unit
 ) {
 
@@ -221,7 +284,9 @@ private fun RowScope.TransactionTypeBubble(
                 color = bubbleColor,
                 shape = MaterialTheme.shapes.large
             )
-            .clickable { onClick() }
+            .conditional(isEnabled) {
+                clickable { onClick() }
+            }
             .padding(
                 vertical = MaterialTheme.spacing.small
             ),
@@ -238,7 +303,8 @@ private fun RowScope.TransactionTypeBubble(
 
 @Composable
 private fun AmountSection(
-    viewModel: AddTransactionScreenViewModel
+    viewModel: TransactionDetailsScreenViewModel,
+    isEditing: Boolean
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -250,6 +316,7 @@ private fun AmountSection(
         onTextChanged = { viewModel.onTransactionAmountChanged(it) },
         placeholder = "Amount",
         trailingText = "RSD",
+        enabled = isEditing,
         keyboardOptions = KeyboardOptions(
             keyboardType = Number,
             imeAction = Done
@@ -261,12 +328,14 @@ private fun AmountSection(
 @Composable
 private fun CategorySection(
     category: String,
+    isEditing: Boolean,
     onCategorySectionClick: () -> Unit
 ) {
 
     RowInputField(
         item = category,
         placeholder = "Category",
+        enabled = isEditing,
         onRowClicked = onCategorySectionClick
     )
 }
@@ -274,6 +343,7 @@ private fun CategorySection(
 @Composable
 private fun NoteSection(
     note: String,
+    isEditing: Boolean,
     onNoteChanged: (String) -> Unit
 ) {
 
@@ -283,6 +353,7 @@ private fun NoteSection(
         text = note,
         onTextChanged = { onNoteChanged(it) },
         placeholder = "Note",
+        enabled = isEditing,
         trailingIcon = Icons.Default.Close,
         onTrailingIconClick = { onNoteChanged("") },
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
@@ -292,6 +363,7 @@ private fun NoteSection(
 @Composable
 private fun AccountSection(
     source: TransactionsSource,
+    isEditing: Boolean,
     onSourceClick: (TransactionsSource) -> Unit
 ) {
 
@@ -308,6 +380,7 @@ private fun AccountSection(
 
                 PrimaryRadioButton(
                     isSelected = transactionSource == source,
+                    enabled = isEditing,
                     onClick = { onSourceClick(transactionSource) }
                 )
 
@@ -327,6 +400,7 @@ private fun AccountSection(
 @Composable
 private fun DescriptionSection(
     description: String,
+    isEditing: Boolean,
     onDescriptionChanged: (String) -> Unit
 ) {
 
@@ -336,6 +410,7 @@ private fun DescriptionSection(
         text = description,
         onTextChanged = { onDescriptionChanged(it) },
         singleLine = false,
+        enabled = isEditing,
         placeholder = "Description",
         trailingIcon = Icons.Default.Close,
         onTrailingIconClick = { onDescriptionChanged("") },
@@ -345,20 +420,20 @@ private fun DescriptionSection(
 
 @Composable
 private fun IsLoadingState(
-    viewModel: AddTransactionScreenViewModel
+    viewModel: TransactionDetailsScreenViewModel
 ) {
 
     val isLoading by remember { viewModel.isLoading }
 
     if (isLoading) {
 
-        AddTransactionLoadingScreen()
+        TransactionDetailsLoadingScreen()
     }
 }
 
 @Composable
 private fun IsErrorState(
-    viewModel: AddTransactionScreenViewModel
+    viewModel: TransactionDetailsScreenViewModel
 ) {
 
     val isError by remember { viewModel.isError }
@@ -371,7 +446,7 @@ private fun IsErrorState(
 
 @Composable
 private fun CategoryDialogsSate(
-    viewModel: AddTransactionScreenViewModel
+    viewModel: TransactionDetailsScreenViewModel
 ) {
 
     val isSelectDialogVisible by remember { viewModel.isSelectCategoryDialogVisible }
@@ -402,13 +477,13 @@ private fun CategoryDialogsSate(
 
 @Composable
 private fun EventsHandler(
-    viewModel: AddTransactionScreenViewModel,
+    viewModel: TransactionDetailsScreenViewModel,
     navController: NavHostController
 ) {
 
     val event by viewModel.events.collectAsState(initial = null)
 
-    LaunchedEffect(key1 =  event) {
+    LaunchedEffect(key1 = event) {
 
         when (event) {
 

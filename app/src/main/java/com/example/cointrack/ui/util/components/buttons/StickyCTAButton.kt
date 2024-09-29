@@ -1,6 +1,8 @@
 package com.example.cointrack.ui.util.components.buttons
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,7 +24,9 @@ fun BoxScope.StickyCTAButton(
         modifier = modifier
             .align(Alignment.BottomCenter)
             .padding(bottom = MaterialTheme.spacing.large),
-        visible = isVisible
+        visible = isVisible,
+        enter = fadeIn(),
+        exit = fadeOut()
     ) {
 
         PrimaryButton(

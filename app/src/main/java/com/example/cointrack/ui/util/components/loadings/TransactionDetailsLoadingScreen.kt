@@ -14,7 +14,7 @@ import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.spacing
 
 @Composable
-fun AddTransactionLoadingScreen() {
+fun TransactionDetailsLoadingScreen() {
 
     DefaultLoadingBackground {
 
@@ -59,7 +59,7 @@ fun AddTransactionLoadingScreen() {
 
 @Preview
 @Composable
-private fun AddTransactionLoadingScreenPreview() = CoinTrackTheme {
+private fun TransactionDetailsLoadingScreenPreview() = CoinTrackTheme {
 
-    AddTransactionLoadingScreen()
+    TransactionDetailsLoadingScreen()
 }

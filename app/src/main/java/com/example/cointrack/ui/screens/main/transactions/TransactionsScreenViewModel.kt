@@ -9,6 +9,7 @@ import com.example.cointrack.domain.enums.TransactionType
 import com.example.cointrack.domain.models.Transaction
 import com.example.cointrack.repository.interactors.AuthInteractor
 import com.example.cointrack.repository.interactors.TransactionsInteractor
+import com.example.cointrack.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -47,7 +48,11 @@ class TransactionsScreenViewModel @Inject constructor(
 
     private fun fetchTransactions() = viewModelScope.launch {
 
-        /*transactionsRepository.getTransactionsSimulated(false).collect { result ->
+        val userId = authRepository.getUserId()
+
+        if (userId.isBlank()) return@launch
+
+        transactionsRepository.getTransactions(userId).collect { result ->
 
             when (result) {
 
@@ -55,7 +60,7 @@ class TransactionsScreenViewModel @Inject constructor(
                 is Resource.Error   -> handleFetchTransactionsError(result.message)
                 is Resource.Loading -> handleFetchTransactionsLoading(result.isLoading)
             }
-        }*/
+        }
     }
 
     //region Fetch Transactions Helpers
@@ -99,6 +104,11 @@ class TransactionsScreenViewModel @Inject constructor(
         isSortAndFilterDialogVisible.value = false
     }
 
+    fun onTransactionClicked(transactionId: String) {
+
+        navigateToTransactionDetails(transactionId)
+    }
+
     fun onRetryClicked() {
 
         isError.value = null
@@ -113,9 +123,9 @@ class TransactionsScreenViewModel @Inject constructor(
         events.emit(Events.NavigateToAddTransaction)
     }
 
-    private fun navigateToTransactionDetails() = viewModelScope.launch {
+    private fun navigateToTransactionDetails(selectedTransactionId: String) = viewModelScope.launch {
 
-        events.emit(Events.NavigateToTransactionDetails)
+        events.emit(Events.NavigateToTransactionDetails(selectedTransactionId))
     }
 
     //endregion
@@ -123,6 +133,6 @@ class TransactionsScreenViewModel @Inject constructor(
     sealed class Events {
 
         object NavigateToAddTransaction: Events()
-        object NavigateToTransactionDetails: Events()
+        data class NavigateToTransactionDetails(val selectedTransactionId: String): Events()
     }
 }
