@@ -53,7 +53,7 @@ import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.components.BoxWithBackgroundPattern
 import com.example.cointrack.ui.util.primary.PrimaryButton
 import com.example.cointrack.ui.util.primary.PrimaryOutlinedTextField
-import com.example.cointrack.util.extentions.findActivity
+import com.example.cointrack.util.extensions.findActivity
 import com.example.cointrack.util.validateNotEmpty
 
 @Composable

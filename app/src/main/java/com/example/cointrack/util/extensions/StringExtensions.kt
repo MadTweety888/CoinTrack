@@ -1,4 +1,4 @@
-package com.example.cointrack.util.extentions
+package com.example.cointrack.util.extensions
 
 fun String.tryUpdatingDoubleState(stateUpdateAction: (Double?) -> Unit) {
 

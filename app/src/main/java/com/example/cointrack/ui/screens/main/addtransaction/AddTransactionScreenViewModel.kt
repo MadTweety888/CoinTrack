@@ -12,10 +12,11 @@ import com.example.cointrack.repository.interactors.AuthInteractor
 import com.example.cointrack.repository.interactors.CategoriesInteractor
 import com.example.cointrack.repository.interactors.TransactionsInteractor
 import com.example.cointrack.util.Resource
-import com.example.cointrack.util.extentions.tryUpdatingDoubleState
+import com.example.cointrack.util.extensions.tryUpdatingDoubleState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,6 +58,11 @@ class AddTransactionScreenViewModel @Inject constructor(
     fun onTransactionTypeChanged(type: TransactionType) {
 
         transactionDraft.value = transactionDraft.value.copy(type = type)
+    }
+
+    fun onTransactionDateChanged(date: LocalDateTime?) {
+
+        transactionDraft.value = transactionDraft.value.copy(date = date)
     }
 
     fun onTransactionAmountChanged(amount: String) {

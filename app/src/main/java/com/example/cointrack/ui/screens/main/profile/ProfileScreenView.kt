@@ -58,7 +58,7 @@ import com.example.cointrack.ui.util.components.loadings.ProfileLoadingScreen
 import com.example.cointrack.ui.util.primary.PrimaryButton
 import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
 import com.example.cointrack.ui.util.primary.PrimaryTextField
-import com.example.cointrack.util.extentions.findActivity
+import com.example.cointrack.util.extensions.findActivity
 import com.skydoves.landscapist.glide.GlideImage
 
 private const val PHOTO_SIZE = 120

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
-import com.example.cointrack.util.extentions.shimmerLoadingAnimation
+import com.example.cointrack.util.extensions.shimmerLoadingAnimation
 
 @Composable
 fun ProfileLoadingScreen(

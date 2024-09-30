@@ -61,6 +61,14 @@ import com.example.cointrack.ui.util.primary.PrimaryErrorScreen
 import com.example.cointrack.ui.util.primary.PrimaryHeader
 import com.example.cointrack.ui.util.primary.PrimaryRadioButton
 import com.example.cointrack.ui.util.primary.PrimaryTextField
+import com.example.cointrack.util.extensions.DateTimeFormatters.TRANSACTION_DATE_FORMAT
+import com.example.cointrack.util.extensions.format
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 private const val NAV_BACK_ICON_SIZE = 18
 
@@ -114,6 +122,13 @@ private fun AddTransactionScreenView(
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+            DateSection(
+                date = transactionDraft.date,
+                onDatePicked = { viewModel.onTransactionDateChanged(it) }
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
             AmountSection(viewModel)
 
@@ -233,6 +248,51 @@ private fun RowScope.TransactionTypeBubble(
             style = MaterialTheme.typography.button,
             color = bubbleColor
         )
+    }
+}
+
+@Composable
+private fun DateSection(
+    date: LocalDateTime?,
+    onDatePicked: (LocalDateTime?) -> Unit
+) {
+
+    val focusManager = LocalFocusManager.current
+
+    val dateDialogState = rememberMaterialDialogState()
+
+    RowInputField(
+        item = date.format(TRANSACTION_DATE_FORMAT),
+        placeholder = "Date",
+        trailingIcon = painterResource(id = R.drawable.calendar_icon),
+        onRowClicked = {
+
+            dateDialogState.show()
+            focusManager.clearFocus()
+        }
+    )
+
+    MaterialDialog(
+        dialogState = dateDialogState,
+        buttons = {
+
+            positiveButton("Confirm")
+
+            negativeButton("Cancel")
+        }
+    ) {
+
+        datepicker(
+            initialDate = date?.toLocalDate() ?: LocalDate.now(),
+            title = "Pick a transaction date",
+            colors = DatePickerDefaults.colors(
+                headerBackgroundColor = MaterialTheme.colors.primary,
+                headerTextColor = MaterialTheme.colors.onPrimary
+            )
+        ) { pickedDate ->
+
+            onDatePicked(pickedDate.atStartOfDay())
+        }
     }
 }
 

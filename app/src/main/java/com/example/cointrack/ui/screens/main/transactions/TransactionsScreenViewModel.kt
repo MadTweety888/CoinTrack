@@ -1,5 +1,6 @@
 package com.example.cointrack.ui.screens.main.transactions
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,11 +26,29 @@ class TransactionsScreenViewModel @Inject constructor(
 
     var userId: String? = null
 
-    val transactions = mutableStateOf<List<Transaction>>(emptyList())
+    private val transactions = mutableStateOf<List<Transaction>>(emptyList())
 
     val selectedSort = mutableStateOf(DATE_DESCENDING)
     val selectedFilter = mutableStateOf<TransactionType?>(null)
     val isSortAndFilterDialogVisible = mutableStateOf(false)
+
+    val sortedAndFilteredTransactions = derivedStateOf {
+
+        val filteredTransactions = selectedFilter.value?.let { filter ->
+
+            transactions.value.filter { it.type == filter }
+
+        } ?: transactions.value
+
+        if (selectedSort.value == DATE_DESCENDING) {
+
+            filteredTransactions.sortedByDescending { it.date }
+
+        } else {
+
+            filteredTransactions.sortedBy { it.date }
+        }
+    }
 
     val isLoading = mutableStateOf(false)
     val isError = mutableStateOf<String?>(null)
@@ -97,9 +116,16 @@ class TransactionsScreenViewModel @Inject constructor(
         isSortAndFilterDialogVisible.value = false
     }
 
-    fun onSortAndFilterDialogConfirmed(selectedSort: SortOrder, selectedFilter: TransactionType) {
+    fun onSortAndFilterDialogReset() {
 
-        this.selectedSort.value = selectedSort
+        selectedSort.value = DATE_DESCENDING
+        selectedFilter.value = null
+        isSortAndFilterDialogVisible.value = false
+    }
+
+    fun onSortAndFilterDialogConfirmed(selectedSort: SortOrder?, selectedFilter: TransactionType?) {
+
+        selectedSort?.let { this.selectedSort.value = it }
         this.selectedFilter.value = selectedFilter
         isSortAndFilterDialogVisible.value = false
     }

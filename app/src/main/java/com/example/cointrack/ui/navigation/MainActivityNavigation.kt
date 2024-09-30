@@ -126,7 +126,7 @@ private fun AnimatedNavigation(
         composable(
             route = TRANSACTIONS_SCREEN
         ) {
-            TransactionsScreen(navController)
+            TransactionsScreen(navController, mainViewModel)
         }
 
         composable(

@@ -2,6 +2,7 @@ package com.example.cointrack.util
 
 import androidx.compose.ui.unit.Dp
 import kotlin.math.ceil
+import kotlin.math.floor
 
 fun calculateNumberOfLoadingRectangles(
     availableSpace: Dp,
@@ -9,5 +10,5 @@ fun calculateNumberOfLoadingRectangles(
     rectanglePadding: Dp
 ): Int {
 
-    return ceil(availableSpace.div(rectangleHeight + rectanglePadding * 2)).toInt()
+    return floor(availableSpace.div(rectangleHeight + rectanglePadding * 2)).toInt()
 }

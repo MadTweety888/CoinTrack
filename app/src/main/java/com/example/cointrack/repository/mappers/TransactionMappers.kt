@@ -7,6 +7,9 @@ import com.example.cointrack.domain.models.TransactionDraft
 import com.example.cointrack.repository.dto.CreateTransactionDTO
 import com.example.cointrack.repository.dto.TransactionResponseDTO
 import com.example.cointrack.repository.dto.UpdateTransactionDTO
+import com.example.cointrack.util.extensions.DateTimeFormatters.FIREBASE_TIMESTAMP_FORMAT
+import com.example.cointrack.util.extensions.toFirebaseTimestamp
+import com.example.cointrack.util.extensions.toLocalDateTime
 import com.google.firebase.firestore.DocumentSnapshot
 
 fun DocumentSnapshot.toTransactionResponseDTO(): TransactionResponseDTO {
@@ -14,6 +17,7 @@ fun DocumentSnapshot.toTransactionResponseDTO(): TransactionResponseDTO {
     return TransactionResponseDTO(
         id = this.id,
         userId = this.getString("userId"),
+        date = this.getTimestamp("date")?.toDate()?.toString(),
         type = this.getString("type"),
         amount = this.getDouble("amount"),
         category = this.getString("category"),
@@ -35,6 +39,7 @@ fun TransactionResponseDTO?.toTransaction(): Transaction? {
         return Transaction(
             id = id ?: return null,
             userId = userId ?: return null,
+            date = date.toLocalDateTime(FIREBASE_TIMESTAMP_FORMAT),
             type = TransactionType.valueOf(type ?: "UNKNOWN"),
             amount = amount ?: return null,
             category = category ?: return null,
@@ -55,6 +60,7 @@ fun TransactionDraft.toCreateTransactionDTO(userId: String): CreateTransactionDT
 
     return CreateTransactionDTO(
         userId      = userId,
+        date        = date.toFirebaseTimestamp(),
         type        = type.name,
         amount      = amount,
         category    = category,
@@ -68,6 +74,7 @@ fun Transaction.toUpdateTransactionDTO(): UpdateTransactionDTO {
 
     return UpdateTransactionDTO(
         userId      = userId,
+        date        = date.toFirebaseTimestamp(),
         type        = type.name,
         amount      = amount,
         category    = category,

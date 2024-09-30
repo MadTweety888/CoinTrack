@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
-import com.example.cointrack.util.extentions.shimmerLoadingAnimation
+import com.example.cointrack.util.extensions.shimmerLoadingAnimation
 
 private const val DEFAULT_BOX_HEIGHT = 40
 

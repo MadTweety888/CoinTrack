@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.Grey30
 import com.example.cointrack.ui.theme.spacing
-import com.example.cointrack.util.extentions.conditional
+import com.example.cointrack.util.extensions.conditional
 
 private const val DEFAULT_TRAILING_ICON_SIZE = 16
 

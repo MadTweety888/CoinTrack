@@ -23,6 +23,7 @@ val SurfaceColor = Color(0xFF272727)
 val OnSurfaceColor = Color(0xFFFFFFFF)
 val PrimaryColor = HollowPurple
 val PrimaryVariantColor = Color(0xFFB20659)
+val OnPrimaryColor = Color(0xFFFFFFFF)
 
 //ADDITIONAL COLORS
 val BackgroundPatternColor = Color(0xBB75045b)

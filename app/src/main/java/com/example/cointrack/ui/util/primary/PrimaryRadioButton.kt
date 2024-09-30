@@ -26,7 +26,7 @@ import com.example.cointrack.ui.theme.Dark
 import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
-import com.example.cointrack.util.extentions.conditional
+import com.example.cointrack.util.extensions.conditional
 
 @Composable
 fun PrimaryRadioButton(

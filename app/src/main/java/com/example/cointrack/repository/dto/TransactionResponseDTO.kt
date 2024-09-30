@@ -12,8 +12,8 @@ data class TransactionResponseDTO(
     @SerialName("userId")
     val userId: String? = null,
 
-    /*@SerialName("type")
-    val date: LocalDateTime? = null,*/
+    @SerialName("date")
+    val date: String? = null,
 
     @SerialName("type")
     val type: String? = null,

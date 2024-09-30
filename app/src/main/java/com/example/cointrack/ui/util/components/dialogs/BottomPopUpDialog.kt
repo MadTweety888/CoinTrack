@@ -32,8 +32,8 @@ import com.example.cointrack.ui.theme.CoinTrackTheme
 import com.example.cointrack.ui.theme.Dark
 import com.example.cointrack.ui.theme.customshapes.RoundedTopCornersWithCurvedEdgeRectangle
 import com.example.cointrack.ui.theme.spacing
-import com.example.cointrack.util.extentions.conditional
-import com.example.cointrack.util.extentions.toDp
+import com.example.cointrack.util.extensions.conditional
+import com.example.cointrack.util.extensions.toDp
 
 @Composable
 fun BottomPopUpDialog(

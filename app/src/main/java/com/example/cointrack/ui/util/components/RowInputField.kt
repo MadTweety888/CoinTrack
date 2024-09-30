@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -27,7 +28,7 @@ import com.example.cointrack.ui.theme.Grey85
 import com.example.cointrack.ui.theme.White
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.primary.PrimaryInputFormTrailingIcon
-import com.example.cointrack.util.extentions.conditional
+import com.example.cointrack.util.extensions.conditional
 
 private const val DEFAULT_TRAILING_ICON_SIZE = 16
 
@@ -37,6 +38,7 @@ fun RowInputField(
     item: String,
     placeholder: String = "",
     enabled: Boolean = true,
+    trailingIcon: Painter = painterResource(id = R.drawable.arrow_down_icon),
     trailingIconSize: Dp = DEFAULT_TRAILING_ICON_SIZE.dp,
     onRowClicked: () -> Unit
 ) {
@@ -79,7 +81,7 @@ fun RowInputField(
 
         PrimaryInputFormTrailingIcon(
             modifier = Modifier.padding(top = MaterialTheme.spacing.small),
-            trailingIcon = painterResource(id = R.drawable.arrow_down_icon),
+            trailingIcon = trailingIcon,
             trailingIconTint = Grey30,
             trailingIconSize = trailingIconSize,
             isEnabled = enabled,

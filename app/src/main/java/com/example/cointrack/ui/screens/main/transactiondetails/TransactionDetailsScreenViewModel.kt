@@ -15,10 +15,11 @@ import com.example.cointrack.repository.interactors.CategoriesInteractor
 import com.example.cointrack.repository.interactors.TransactionsInteractor
 import com.example.cointrack.ui.navigation.NavigationArguments.SELECTED_TRANSACTION_ID_NAV_ARGUMENT
 import com.example.cointrack.util.Resource
-import com.example.cointrack.util.extentions.tryUpdatingDoubleState
+import com.example.cointrack.util.extensions.tryUpdatingDoubleState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,7 +64,8 @@ class TransactionDetailsScreenViewModel @Inject constructor(
                 editingTransaction.value.note.isNotBlank() &&
                 editingTransaction.value.category.isNotBlank() &&
                 editingTransaction.value.source != UNKNOWN &&
-                editingTransaction.value.amount != null
+                editingTransaction.value.amount != null &&
+                editingTransaction.value.date != null
     }
 
     val isLoading = mutableStateOf(false)
@@ -142,6 +144,11 @@ class TransactionDetailsScreenViewModel @Inject constructor(
     fun onTransactionTypeChanged(type: TransactionType) {
 
         editingTransaction.value = editingTransaction.value.copy(type = type)
+    }
+
+    fun onTransactionDateChanged(date: LocalDateTime?) {
+
+        editingTransaction.value = editingTransaction.value.copy(date = date)
     }
 
     fun onTransactionAmountChanged(amount: String) {
@@ -318,6 +325,7 @@ class TransactionDetailsScreenViewModel @Inject constructor(
 
             TransactionDraft(
                 type        = type,
+                date        = date,
                 amount      = amount,
                 category    = category,
                 source      = source,
@@ -332,6 +340,7 @@ class TransactionDetailsScreenViewModel @Inject constructor(
 
         return this?.copy(
             type        = draft.type,
+            date        = draft.date,
             amount      = draft.amount ?: this.amount,
             category    = draft.category,
             source      = draft.source,
@@ -347,7 +356,8 @@ class TransactionDetailsScreenViewModel @Inject constructor(
                this.category != from.category ||
                this.note != from.note ||
                this.description != from.description ||
-               this.type != from.type
+               this.type != from.type ||
+               this.date != from.date
     }
 
     //endregion

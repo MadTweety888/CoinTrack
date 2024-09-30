@@ -1,4 +1,4 @@
-package com.example.cointrack.util.extentions
+package com.example.cointrack.util.extensions
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

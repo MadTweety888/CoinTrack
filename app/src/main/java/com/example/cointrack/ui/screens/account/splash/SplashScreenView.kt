@@ -27,7 +27,7 @@ import com.example.cointrack.ui.screens.account.splash.SplashScreenViewModel.Eve
 import com.example.cointrack.ui.screens.account.splash.SplashScreenViewModel.Events.NavigateToTransactions
 import com.example.cointrack.ui.util.Constants.SPLASH_SCREEN_DURATION
 import com.example.cointrack.ui.util.components.BoxWithBackgroundPattern
-import com.example.cointrack.util.extentions.findActivity
+import com.example.cointrack.util.extensions.findActivity
 import kotlinx.coroutines.delay
 
 @Composable

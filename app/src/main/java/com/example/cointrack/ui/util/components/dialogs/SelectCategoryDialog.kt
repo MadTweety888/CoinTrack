@@ -43,7 +43,7 @@ import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.ComponentSizes
 import com.example.cointrack.ui.util.primary.PrimaryHeader
 import com.example.cointrack.util.calculateNumberOfLoadingRectangles
-import com.example.cointrack.util.extentions.shimmerLoadingAnimation
+import com.example.cointrack.util.extensions.shimmerLoadingAnimation
 import kotlinx.coroutines.delay
 
 private const val ROW_HEIGHT = 56
