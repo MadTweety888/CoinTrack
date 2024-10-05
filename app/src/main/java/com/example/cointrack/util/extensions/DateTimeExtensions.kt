@@ -1,11 +1,12 @@
 package com.example.cointrack.util.extensions
 
-import com.example.cointrack.util.extensions.DateTimeFormatters.FIREBASE_TIMESTAMP_FORMAT
 import com.google.firebase.Timestamp
+import timber.log.Timber
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun LocalDateTime?.format(pattern: String): String {
 
@@ -50,7 +51,7 @@ fun String?.toLocalDateTime(pattern: String): LocalDateTime? {
 
         this?.let {
 
-            val formatter = DateTimeFormatter.ofPattern(pattern)
+            val formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
             LocalDateTime.parse(this, formatter)
 
         }
@@ -66,4 +67,5 @@ object DateTimeFormatters {
 
     const val FIREBASE_TIMESTAMP_FORMAT = "EEE MMM dd HH:mm:ss O yyyy"
     const val TRANSACTION_DATE_FORMAT = "dd/MM/yyyy"
+    const val STATISTICS_DATE_FORMAT = "MMMM / yyyy"
 }

@@ -53,6 +53,7 @@ import com.example.cointrack.ui.theme.Grey70
 import com.example.cointrack.ui.theme.spacing
 import com.example.cointrack.ui.util.components.BoxWithDiagonalBackgroundPattern
 import com.example.cointrack.ui.util.components.RowInputField
+import com.example.cointrack.ui.util.components.TransactionTypeBubble
 import com.example.cointrack.ui.util.components.buttons.StickyCTAButton
 import com.example.cointrack.ui.util.components.dialogs.CreateCategoryDialog
 import com.example.cointrack.ui.util.components.dialogs.SelectCategoryDialog
@@ -209,44 +210,6 @@ private fun TransactionTypeSection(
             transactionType = INCOME,
             isSelected = type == INCOME,
             onClick = { onTransactionTypeClicked(INCOME) }
-        )
-    }
-}
-
-@Composable
-private fun RowScope.TransactionTypeBubble(
-    transactionType: TransactionType,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-
-    val bubbleColor by animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colors.primary else Grey70,
-        animationSpec = tween(durationMillis = 200, easing = LinearEasing),
-        label = "Animated transaction type color"
-    )
-
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .clip(MaterialTheme.shapes.large)
-            .background(Dark)
-            .border(
-                width = 1.dp,
-                color = bubbleColor,
-                shape = MaterialTheme.shapes.large
-            )
-            .clickable { onClick() }
-            .padding(
-                vertical = MaterialTheme.spacing.small
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Text(
-            text = transactionType.toDisplayString(),
-            style = MaterialTheme.typography.button,
-            color = bubbleColor
         )
     }
 }
